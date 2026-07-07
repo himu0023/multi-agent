@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from app.database.database import Base
@@ -17,9 +17,20 @@ class Message(Base):
         nullable=False
     )
 
-    sender = Column(Text, nullable=False)
+    role = Column(
+        String(20),
+        nullable=False
+    )
 
-    message = Column(Text, nullable=False)
+    content = Column(
+        Text,
+        nullable=False
+    )
+
+    agent_name = Column(
+        String(100),
+        nullable=True
+    )
 
     created_at = Column(
         DateTime,

@@ -8,6 +8,7 @@ from app.schemas.chat_session import (
     ChatSessionResponse,
 )
 from app.services.chat_service import ChatService
+from app.services.chat.session_service import SessionService
 
 router = APIRouter(
     prefix="/chat",
@@ -24,7 +25,7 @@ def create_chat_session(
     current_user: User = Depends(get_current_user)
 ):
 
-    return ChatService.create_session(
+    return SessionService.create_session(
         db,
         current_user.id
     )
