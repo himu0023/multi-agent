@@ -28,3 +28,9 @@ class ChatSession(Base):
         "User",
         back_populates="chat_sessions"
     )
+
+    messages = relationship(
+    "Message",
+    back_populates="session",
+    cascade="all, delete-orphan"
+    )

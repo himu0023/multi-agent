@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate
 from app.core.security import hash_password, verify_password
+from app.repositories.user_repository import UserRepository
 
 
 class UserService:
@@ -11,9 +12,10 @@ class UserService:
     def create_user(db: Session, user: UserCreate):
 
         # Check if email already exists
-        existing_user = db.query(User).filter(
-            User.email == user.email
-        ).first()
+        existing_user = UserRepository.get_by_email(
+            db,
+            user.email
+        )
 
         if existing_user:
             raise ValueError("Email already registered")
@@ -25,18 +27,18 @@ class UserService:
             hashed_password=hash_password(user.password)
         )
 
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
+        return UserRepository.create(
+            db,
+            new_user
+        )
 
-        return new_user
-    
     @staticmethod
     def authenticate_user(db: Session, email: str, password: str):
 
-        user = db.query(User).filter(
-            User.email == email
-        ).first()
+        user = UserRepository.get_by_email(
+            db,
+            email
+        )
 
         if not user:
             return None

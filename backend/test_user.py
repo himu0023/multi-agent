@@ -6,7 +6,7 @@ db = SessionLocal()
 
 user = UserCreate(
     name="Himanshu",
-    email="himanshu@gmail.com",
+    email="himanshu2@gmail.com",
     password="123456"
 )
 
