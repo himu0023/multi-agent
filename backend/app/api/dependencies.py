@@ -11,8 +11,11 @@ from app.models.user import User
 
 load_dotenv()
 
+
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
+
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
@@ -23,6 +26,9 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+
+    print("=" * 50)
+    print("TOKEN:", token)
 
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -37,17 +43,24 @@ def get_current_user(
             algorithms=[ALGORITHM]
         )
 
+        print("PAYLOAD:", payload)
+
         email = payload.get("sub")
+
+        print("EMAIL:", email)
 
         if email is None:
             raise credentials_exception
 
-    except JWTError:
+    except JWTError as e:
+        print("JWT ERROR:", repr(e))
         raise credentials_exception
 
     user = db.query(User).filter(
         User.email == email
     ).first()
+
+    print("USER:", user)
 
     if user is None:
         raise credentials_exception
